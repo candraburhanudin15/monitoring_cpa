@@ -1,9 +1,0 @@
-# - job_name: docker
-#   pipeline_stages:
-#     - docker: {}
-#   static_configs:
-#     - targets:
-#         - localhost
-#       labels:
-#         job: dockerlogs
-#         __path__: /var/lib/docker/containers/*/*-json.log

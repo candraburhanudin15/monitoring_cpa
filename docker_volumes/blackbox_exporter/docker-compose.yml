@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    ports:
+      - "9115:9115"
+    command:
+      - --config.file=/etc/blackbox_exporter/blackbox-config.yml
+    volumes:
+      - /home/administrator/monitoring/docker_volumes/blackbox_exporter:/etc/blackbox_exporter:rw

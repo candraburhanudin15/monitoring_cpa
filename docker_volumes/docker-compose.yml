@@ -1,0 +1,84 @@
+version: "3.8"
+networks:
+  monitoring:
+services:
+  blackbox_exporter:
+    image: prom/blackbox-exporter:latest
+    ports:
+      - "9115:9115"
+    networks:
+      - monitoring
+    volumes:
+      - /home/administrator/monitoring/docker_volumes/blackbox_exporter:/etc/blackbox_exporter
+    command: --config.file=/etc/blackbox_exporter/blackbox-config.yml
+  loki:
+    image: grafana/loki:latest
+    restart: always
+    volumes:
+      - /home/administrator/monitoring/docker_volumes/loki:/etc/loki
+    container_name: grafana-loki
+    ports:
+      - "3100:3100"
+    command: --config.file=/etc/loki/loki-config.yml
+    networks:
+      - monitoring
+# node-exporter:
+#    image: prom/node-exporter:latest
+#    container_name: node_exporter
+#    volumes:
+#      - /home/administrator/monitoring/docker_volumes/node_exporter:/etc/node_exporter:rw
+#    restart: always
+#    networks:
+#      - monitoring
+#    ports:
+#      - "9100:9100"
+  promtail:
+    image: grafana/promtail:latest
+    container_name: grafana-promtail
+    volumes:
+      - /var/log:/var/log
+      - /home/administrator/monitoring/docker_volumes/promtail:/etc/promtail
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    ports:
+      - "9080:9080"
+    command: --config.file=/etc/promtail/promtail-config.yml
+    networks:
+      - monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - /home/administrator/monitoring/docker_volumes/prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - monitoring
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    user: "$UID:$GID"
+    volumes:
+      - /home/administrator/monitoring/docker_volumes/grafana:/var/lib/grafana
+    networks:
+      - monitoring
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    restart: always
+    container_name: cadvisor
+    ports:
+      - "9200:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - monitoring

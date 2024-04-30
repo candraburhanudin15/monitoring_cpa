@@ -1,0 +1,134 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['172.18.249.190:9090','172.18.249.190:9115']
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['172.18.249.147:9100','172.18.249.148:9100','172.18.249.190:9100','172.18.249.184:9100','172.18.249.185:9100','172.18.249.186:9100','172.18.249.187:9100','172.18.249.188:9100','172.18.249.190:9100']
+
+  - job_name: 'container_monitor'
+    static_configs:
+      - targets: ['172.18.249.190:9200','172.18.249.190:9323','172.18.249.190:9100']
+
+  - job_name: 'blackbox_CPP'
+    metrics_path: /probe
+    params:
+      module: [http_prometheus]  # Look for a HTTP 200 response.
+    static_configs:
+      - targets:
+        - http://172.18.249.119/brimen-kredit-uat # Brimen Kredit UAT
+        - http://172.18.249.119/brimen-ops # Brimen Ops
+        - http://172.18.249.89/rmwb # RMWB
+        - http://172.18.139.246/enego_deposito # Enego Deposito
+        - http://172.18.249.147/brieazycash # Brieazycash
+        - http://172.18.139.246/brismile # Brismile
+        - http://172.18.249.147/digicorsec # Digicorsec
+        - http://172.18.249.147/monitoring-asset # Monitoring Asset
+        - http://172.18.249.147/rrm-tools-web # RRM Tools Web
+        - http://172.18.249.147/rrm-tools-web-piloting # RRM Tools Web Piloting
+        - http://172.18.249.147/bripas # Bripas
+        - http://172.24.128.41/HEAT # HEAT
+        - http://172.18.249.142/HEAT # HEAT
+        - http://172.18.249.147/bripedia # Bripedia
+        - http://172.18.139.246/spinhtml/britaxs # Britaxs
+        - http://172.18.249.147/xform/login # XForm Login
+        - http://172.18.249.147/pab # PAB
+        - http://172.18.249.147/rkf_dev # RKF Dev
+        - http://172.18.249.212/ops_console # Ops Console
+        - http://172.18.249.81/brilook # Brilook
+        - http://172.18.249.79/admin # Admin
+        - http://172.18.249.81/brisurvey # Brisurvey
+        - http://172.18.249.147/eform-v2-2-bpum # Eform V2.2 BPUM
+        - http://172.18.249.147/productholding # Product Holding
+        - http://172.18.249.147/bripedia-frontend-web # Bripedia Frontend Web
+        - http://172.18.249.147/britaxs #britaxs
+        - http://172.18.249.147/cashback-front #cashback-front
+        - http://172.18.249.147/briproduct #briproduct
+        - http://172.18.249.148/monitoring-asset-backend #monitoring-asset-backend
+        - http://172.18.249.121/brimenops_update #brimenops_update
+        - http://172.18.249.121/brimenapp #brimenapp
+        - http://172.18.249.122/portalopk #portalopl
+        - http://172.18.249.187:2000/login #brismafe2used
+        - http://http://172.18.249.187:2000/login #brifinancefe
+        - http://172.18.249.187:4444/brifinance/login #brifinanceintegrationfe
+        - http://172.18.249.187:3333/brilife/login #brilifeintegrationfe
+        - http://172.18.249.187:1111/brins/login #brinsintegrationfe
+        - http://172.18.249.187:2222/braya/login #brayaintegrationfe
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.18.249.190:9115  # The blackbox exporter's real hostname:port
+
+  - job_name: 'Blackbox_GDP' #goverment development platform
+    metrics_path: /probe
+    params:
+        module: [http_prometheus]  # Look for a HTTP 200 response.
+    static_configs:
+        - targets:
+          - http://172.18.226.44/kartunelayan #kartu nelayan
+          - http://172.18.226.44/cashcard #Dashboard Cashcard VA
+          - http://172.18.226.44/digitalrpl #Digital RPL
+          - http://172.18.139.246/bansos #bansos
+    relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: 172.18.249.190:9115  # The blackbox exporter's real hostname:port
+
+  - job_name: 'Blackbox_HC'
+    metrics_path: /probe
+    params:
+        module: [http_prometheus]  # Look for a HTTP 200 response.
+    static_configs:
+        - targets:
+          - http://172.18.249.147/cashback # Cashback
+          - http://172.18.249.127/recruitmentadmin # Recruitment admin
+          - http://172.18.139.246/bristars #bristarsNew
+          - http://172.18.139.246/eoffice #eoffice
+          - http://172.18.249.89/epension #epensiun
+          - http://172.18.249.127/hcms_general # HCMS General
+          - http://172.18.249.89/corporate_culture #Corporate Culture
+          - http://172.18.249.127/hcauth #HCMS Auth
+          - http://172.18.249.89/basic #Basic
+          - http://172.18.249.89/dio_boc #Dio Boc
+          - http://172.18.249.89/brilliance #Brilliance
+          - http://172.18.249.127/performance_bootcamp #Performance Bootcamp
+          - http://172.18.249.127/employee #HCMS Employee
+          - http://172.18.139.246/promosi #Digimo
+          - http://172.18.249.89/smkol_kontrak #sivabri
+
+    relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: 172.18.249.190:9115  # The blackbox exporter's real hostname:port
+
+  - job_name: 'Blackbox_CDP_Kredit' #goverment development platform
+    metrics_path: /probe
+    params:
+        module: [http_prometheus]  # Look for a HTTP 200 response.
+    static_configs:
+        - targets:
+          - http://172.18.139.74:8080/BRIiCorporate #WBS
+          - http://http://172.18.139.75:32310/ #BRICARD
+          - http://zurich-uat-cardpro.apps.ocp-dev.bri.co.id #CardPro
+
+    relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: 172.18.249.190:9115  # The blackbox exporter's real hostname:port
